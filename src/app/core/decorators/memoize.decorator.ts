@@ -8,22 +8,18 @@ export function memoize<T extends string>() {
 
 export type MemoizeFnParam<T> = (args: T) => T
 
-export type MemoizeFnReturn<T> = (
-  args: T
-) => Map<string, T> | string | undefined
+export type MemoizeFnReturn<T> = (args: T) => Map<string, T> | string | undefined
 
-export function memoizeFn<T extends string>(
-  fn: MemoizeFnParam<T>
-): MemoizeFnReturn<T> {
-  const cache: Map<string, T> = new Map<string, T>()
+export function memoizeFn<T extends string>(fn: MemoizeFnParam<T>): MemoizeFnReturn<T> {
+  const cache: {[key: string]: T} = {  }
   return (args: T): Map<string, T> | string | undefined => {
     const key: T = args
-    if (cache.has(key)) {
+    if (key in cache) {
       console.warn('from cache', '| cache: ', cache, '| key: ', key)
-      return cache.get(key)
+      return cache[key]
     } else {
       console.warn('NOT from cache', '| cache: ', cache, '| key: ', key)
-      return cache.set(key, fn(args))
+      return cache[key] = fn(args)
     }
   }
 }

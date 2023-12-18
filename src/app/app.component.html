@@ -1,8 +1,5 @@
 <po-header></po-header>
-<p>Title (with decorator): {{ getTitleDec(title) }}</p>
-<br />
-<p>Title (with memoizationFn): {{ getTitleMem() }}</p>
-<br />
-<button (click)="toggleTitle()">Change Title</button>
-<button (click)="increment()">Other button</button>
+
+<a [routerLink]='["tutorials", "memoize"]'>MEMOIZE</a>
+
 <router-outlet></router-outlet>
