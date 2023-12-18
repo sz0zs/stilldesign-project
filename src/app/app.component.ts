@@ -1,43 +1,40 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterOutlet} from '@angular/router';
 import {USERS_DEFAULT_DATA} from "./core/data";
 import {HeaderComponent} from "./shared/header/header.component";
+import {memoize, memoizeFn, MemoizeFnReturn} from "./core/decorators/memoise.decorator";
+
+type TitleType = 'AAA' | 'BBB'
 
 @Component({
   selector: 'po-root',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, RouterOutlet, HeaderComponent],
   templateUrl: './app.component.html'
 })
 export class AppComponent {
   users = USERS_DEFAULT_DATA
+  title: TitleType = 'AAA'
+  memoizedFn: MemoizeFnReturn<TitleType> = memoizeFn((title: TitleType) => title)
+  private _clickCounter = 0
+
+  @memoize()
+  getTitleDec(title: TitleType) { return title }
+
+  getTitleMem() {
+    return this.memoizedFn(this.title)
+  }
+
+  toggleTitle() {
+    if (this.title === 'AAA') this.title = 'BBB'
+    else this.title = 'AAA'
+  }
+
+  increment() {
+    this._clickCounter++
+  }
+
+
 }
-/*
-TODO
-TASKOK
-. GIT
-- linter/prettier
-- css
-- header
-- footer
-- menu
-- standalone user module lazy loading
-- user module (list, create / view, form, form tabs: base form details, address editor, role editor)
-- inputok létrehozása
-- signal in user module
-- material
-- ng zorro
-- bootstrap
-- base css
-- memoization
-- NGRX store
-- NGRX feature store
-- NGRX with signals
-- title handler
-- inputokból npm package
-- SSR
-- SEO
-- Universal
-- BE
- */
