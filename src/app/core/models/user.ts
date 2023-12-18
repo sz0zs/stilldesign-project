@@ -1,6 +1,6 @@
-import {Address} from "./address";
-import {GenderEnum} from "./gender.enum";
-import {RoleEnum} from "./role.enum";
+import { Address } from './address'
+import { GenderEnum } from './gender.enum'
+import { RoleEnum } from './role.enum'
 
 export interface User {
   givenName: string

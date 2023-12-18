@@ -1,9 +1,13 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {RouterOutlet} from '@angular/router';
-import {USERS_DEFAULT_DATA} from "./core/data";
-import {HeaderComponent} from "./shared/header/header.component";
-import {memoize, memoizeFn, MemoizeFnReturn} from "./core/decorators/memoise.decorator";
+import { ChangeDetectionStrategy, Component } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { RouterOutlet } from '@angular/router'
+import { USERS_DEFAULT_DATA } from './core/data'
+import { HeaderComponent } from './shared/header/header.component'
+import {
+  memoize,
+  memoizeFn,
+  MemoizeFnReturn
+} from './core/decorators/memoise.decorator'
 
 type TitleType = 'AAA' | 'BBB'
 
@@ -17,11 +21,15 @@ type TitleType = 'AAA' | 'BBB'
 export class AppComponent {
   users = USERS_DEFAULT_DATA
   title: TitleType = 'AAA'
-  memoizedFn: MemoizeFnReturn<TitleType> = memoizeFn((title: TitleType) => title)
+  memoizedFn: MemoizeFnReturn<TitleType> = memoizeFn(
+    (title: TitleType) => title
+  )
   private _clickCounter = 0
 
   @memoize()
-  getTitleDec(title: TitleType) { return title }
+  getTitleDec(title: TitleType) {
+    return title
+  }
 
   getTitleMem() {
     return this.memoizedFn(this.title)
@@ -35,6 +43,4 @@ export class AppComponent {
   increment() {
     this._clickCounter++
   }
-
-
 }
