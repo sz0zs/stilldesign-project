@@ -31,7 +31,7 @@ export class PageParamsService {
    * @private
    */
   private _findPageData(route: ActivatedRoute = this._route, pageParams: PageParams = MAIN_PAGE_PARAMS): PageParams {
-    if (route?.snapshot?.data && 'pageTitle' in route.snapshot.data || 'header' in route.snapshot.data) {
+    if ((route?.snapshot?.data && 'pageTitle' in route.snapshot.data) || 'header' in route.snapshot.data) {
       const data = route.snapshot.data as PageParams
       pageParams = { ...pageParams, ...data }
     }
