@@ -1,3 +1,5 @@
-<div [routerLink]='"/"'>
-  <p>header works!</p>
-</div>
+<header [routerLink]='"/"'>
+  @if (pageParams$ | async; as pageParams) {
+  <h1>{{pageParams.header}}</h1>
+  }
+</header>
