@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { USERS_DEFAULT_DATA } from '../../../core/data'
 import { RoleEnum } from '../../../core/models/role.enum'
@@ -10,16 +10,14 @@ export interface Option<T> {
   label: string
 }
 
-export interface TableHeader extends TableCellBase {
-}
+export interface TableHeader extends TableCellBase {}
 
 export interface TableRow {
   cells: TableCell[]
   id?: number
 }
 
-export interface TableCell extends TableCellBase {
-}
+export interface TableCell extends TableCellBase {}
 
 export interface TableCellBase {
   property: string
@@ -56,18 +54,34 @@ interface UserForm {
 
 @Component({
   standalone: true,
-  imports: [
-    ReactiveFormsModule
-  ],
+  imports: [ReactiveFormsModule],
   templateUrl: './input-base.component.html',
   styleUrl: './input-base.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InputBaseComponent implements OnInit {
-
-  private _users = [ ...USERS_DEFAULT_DATA ]
+export class InputBaseComponent {
+  // private _users = [...USERS_DEFAULT_DATA]
+  private _users = signal(USERS_DEFAULT_DATA)
   headers: TableHeader[] = HEADER
-  rows: TableRow[]
+  rows = computed(() =>
+    this._users().map((user) => ({
+      id: user.id,
+      cells: [
+        {
+          label: `${user.familyName} ${user.givenName}`,
+          property: this.headers.at(0)!.property
+        },
+        {
+          label: user.birthday?.toLocaleString(),
+          property: this.headers.at(1)!.property
+        },
+        {
+          label: `${user.mailingAddress.zip} ${user.mailingAddress.city}, ${user.mailingAddress.streetName} ${user.mailingAddress.streetType} ${user.mailingAddress.streetNumber}.`,
+          property: this.headers.at(2)!.property
+        }
+      ]
+    }))
+  )
   form: FormGroup<UserForm> | undefined
   genderOptions: Option<GenderEnum>[] = [
     {
@@ -94,36 +108,11 @@ export class InputBaseComponent implements OnInit {
     }
   ]
 
-  constructor(private _fb: FormBuilder, private _cdr: ChangeDetectorRef) {
-  }
-
-  ngOnInit() {
-    this._createRows()
-  }
-
-  private _createRows() {
-    this.rows = this._users.map((user) => ({
-      id: user.id,
-      cells: [
-        {
-          label: `${ user.familyName } ${user.givenName}`,
-          property: this.headers.at(0)!.property
-        },
-        {
-          label: user.birthday?.toLocaleString(),
-          property: this.headers.at(1)!.property
-        },
-        {
-          label: `${ user.mailingAddress.zip } ${user.mailingAddress.city}, ${user.mailingAddress.streetName} ${user.mailingAddress.streetType} ${user.mailingAddress.streetNumber}.`,
-          property: this.headers.at(2)!.property
-        }
-      ]
-    }))
-  }
+  constructor(private _fb: FormBuilder) {}
 
   tableRowClicked($index: number) {
     this._createForm()
-    this.form!.patchValue(this._users.at($index)!)
+    this.form!.patchValue(this._users().at($index)!)
   }
 
   newUser() {
@@ -136,15 +125,18 @@ export class InputBaseComponent implements OnInit {
 
   saveUser() {
     const newValue = this.form!.getRawValue() as User
-    const index = newValue.id === null ? -1 : this._users.findIndex((user) => user.id === +newValue.id!)
+    const index = newValue.id === null ? -1 : this._users().findIndex((user) => user.id === +newValue.id!)
     if (index >= 0) {
-      this._users[index] = newValue
+      this._users.update((users) => {
+        const clonedUsers = [...users]
+        clonedUsers[index] = newValue
+        return clonedUsers
+      })
     } else {
-      newValue.id = Math.max(...this._users.map((user) => user.id)) + 1
-      this._users.push(newValue)
+      newValue.id = Math.max(...this._users().map((user) => user.id)) + 1
+      this._users.update((users) => [...users, newValue])
     }
     this.cancelUser()
-    this._createRows()
   }
 
   private _createForm() {

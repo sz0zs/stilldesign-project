@@ -9,7 +9,7 @@
         </tr>
       </thead>
       <tbody>
-        @for(row of rows; track row.id) {
+        @for(row of rows(); track row.id) {
         <tr (click)="tableRowClicked($index)">
           @for(cell of row.cells; track cell.property) {
           <td>{{cell.label}}</td>

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { RouterLink, RouterOutlet } from '@angular/router'
-import { USERS_DEFAULT_DATA } from './core/data'
 import { HeaderComponent } from './shared/header/header.component'
 import { PageParamsService } from './core/services/page-params.service'
 import { TUTORIAL_FORM_BASE_URL, TUTORIAL_MEMOIZE_URL } from './modules/tutorials/routes'
@@ -11,30 +10,31 @@ import { TUTORIAL_FORM_BASE_URL, TUTORIAL_MEMOIZE_URL } from './modules/tutorial
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, RouterOutlet, HeaderComponent, RouterLink],
-  styles: [`
-    div.menu {
-      background-color: lightblue;
+  styles: [
+    `
+      div.menu {
+        background-color: lightblue;
 
-      nav {
+        nav {
+          ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
 
-        ul {
-          margin: 0;
-          padding: 0;
-          list-style-type: none;
+            li {
+              display: inline-block;
+              padding: 20px 0;
+              margin-left: 20px;
 
-          li {
-            display: inline-block;
-            padding: 20px 0;
-            margin-left: 20px;
-
-            a {
-            font-weight: bold;
+              a {
+                font-weight: bold;
+              }
             }
           }
         }
       }
-    }
-  `],
+    `
+  ],
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
@@ -46,5 +46,4 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this._pageParams.watchPageParams()
   }
-
 }
