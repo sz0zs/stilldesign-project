@@ -1,0 +1,25 @@
+:host {
+  display: block;
+
+  div.page-container {
+    display: flex;
+
+    div {
+      flex: 1;
+
+      table {
+
+        th, td {
+          padding: 12px 6px;
+          border-bottom: 1px solid slategray;
+        }
+      }
+
+      &.form-container {
+        label {
+          display: block;
+        }
+      }
+    }
+  }
+}

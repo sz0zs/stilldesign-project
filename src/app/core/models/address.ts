@@ -7,5 +7,6 @@ export interface Address {
   streetNumber: number
   floor?: number
   door?: number
+  building?: string
   other?: string
 }

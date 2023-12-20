@@ -1,0 +1,160 @@
+<div class="page-container">
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          @for(header of headers; track header.property) {
+          <th>{{header.label}}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for(row of rows; track row.id) {
+        <tr (click)="tableRowClicked($index)">
+          @for(cell of row.cells; track cell.property) {
+          <td>{{cell.label}}</td>
+          }
+        </tr>
+        }
+      </tbody>
+    </table>
+    <button (click)="newUser()">Új felhasználó</button>
+  </div>
+  <div class="form-container">
+    @if(form) {
+    <h3>@if (form.controls.id) { Adatok szerkesztése } @else { Új felhasználó }</h3>
+    <form [formGroup]="form!" #formTemp="ngForm" (ngSubmit)="saveUser()">
+      <label
+        >Vezetéknév
+        <input formControlName="givenName" />
+      </label>
+      <label
+        >Keresztnév
+        <input formControlName="familyName" />
+      </label>
+      <label
+        >Született
+        <input type="date" formControlName="birthday" />
+      </label>
+      <label
+        >Neme
+        <select formControlName="gender">
+          @for(gender of genderOptions; track gender.label) {
+          <option [ngValue]="gender.value">{{gender.label}}</option>
+          }
+        </select>
+      </label>
+      <label
+        >Súly
+        <input type="number" formControlName="weight" />
+      </label>
+      <label
+        >Magasság
+        <input type="number" formControlName="height" />
+      </label>
+      <label
+        >Szemszín
+        <input formControlName="eyeColour" />
+      </label>
+      <label
+        >Hajszín
+        <input formControlName="hairColour" />
+      </label>
+      <label
+        >Jogkör
+        <select formControlName="role">
+          @for(gender of roleOptions; track gender.label) {
+          <option [ngValue]="gender.value">{{gender.label}}</option>
+          }
+        </select>
+      </label>
+      <fieldset [formGroup]="form.controls.mailingAddress">
+        <p>Levelezési cím</p>
+        <label
+          >Ország
+          <input formControlName="country" />
+        </label>
+        <label
+          >Irányítószám
+          <input formControlName="zip" />
+        </label>
+        <label
+          >Település
+          <input formControlName="city" />
+        </label>
+        <label
+          >Utca neve
+          <input formControlName="streetName" />
+        </label>
+        <label
+          >Utca típusa
+          <input formControlName="streetType" />
+        </label>
+        <label
+          >Házszám
+          <input type="number" formControlName="streetNumber" />
+        </label>
+        <label
+          >Épület
+          <input formControlName="building" />
+        </label>
+        <label
+          >Emelet
+          <input type="number" formControlName="floor" />
+        </label>
+        <label
+          >Ajtó
+          <input formControlName="door" />
+        </label>
+        <label
+          >Egyéb
+          <textarea formControlName="other"></textarea>
+        </label>
+      </fieldset>
+      <fieldset [formGroup]="form.controls.billingAddress">
+        <p>Számlázási cím</p>
+        <label
+          >Ország
+          <input formControlName="country" />
+        </label>
+        <label
+          >Irányítószám
+          <input formControlName="zip" />
+        </label>
+        <label
+          >Település
+          <input formControlName="city" />
+        </label>
+        <label
+          >Utca neve
+          <input formControlName="streetName" />
+        </label>
+        <label
+          >Utca típusa
+          <input formControlName="streetType" />
+        </label>
+        <label
+          >Házszám
+          <input formControlName="streetNumber" />
+        </label>
+        <label
+          >Emelet
+          <input formControlName="floor" />
+        </label>
+        <label
+          >Ajtó
+          <input formControlName="door" />
+        </label>
+        <label
+          >Egyéb
+          <input formControlName="other" />
+        </label>
+      </fieldset>
+      <div>
+        <button type="submit" [disabled]="formTemp.invalid || formTemp.pristine">Mentés</button>
+        <button (click)="cancelUser()">Mégsem</button>
+      </div>
+    </form>
+    }
+  </div>
+</div>

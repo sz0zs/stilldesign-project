@@ -1,5 +1,16 @@
 <po-header></po-header>
 
-<a [routerLink]='["tutorials", "memoize"]'>MEMOIZE</a>
+<div class="menu">
+  <nav>
+    <ul>
+      <li>
+        <a [routerLink]='["tutorials", TUTORIAL_MEMOIZE_URL]'>{{ TUTORIAL_MEMOIZE_URL.toLocaleUpperCase() }}</a>
+      </li>
+      <li>
+        <a [routerLink]='["tutorials", TUTORIAL_FORM_BASE_URL]'>{{ TUTORIAL_FORM_BASE_URL.toLocaleUpperCase() }}</a>
+      </li>
+    </ul>
+  </nav>
+</div>
 
 <router-outlet></router-outlet>

@@ -6,12 +6,13 @@ export interface User {
   givenName: string
   familyName: string
   birthday: Date
-  male: GenderEnum
+  gender: GenderEnum
   weight: number
   height: number
   eyeColour: string
   hairColour: string
+  id: number
   role: RoleEnum
-  mailingAddress?: Address
+  mailingAddress: Address
   billingAddress?: Address
 }
