@@ -9,6 +9,6 @@ export interface EditUserProps extends UserProps {
   id: number
 }
 
-export const updateUser = createAction('[USERS] edit existing user by id', props<{ user: EditUserProps }>())
+export const updateUser = createAction('[USERS] edit existing user by id', props<EditUserProps>())
 
-export const saveUser = createAction('[USERS] save new user', props<{ user: UserProps }>())
+export const saveUser = createAction('[USERS] save new user', props<UserProps>())

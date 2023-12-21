@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { RouterLink, RouterOutlet } from '@angular/router'
-import { HeaderComponent } from './shared/header/header.component'
+import { Store } from '@ngrx/store'
+
 import { PageParamsService } from './core/services/page-params.service'
 import { TUTORIAL_FORM_BASE_URL, TUTORIAL_MEMOIZE_URL } from './modules/tutorials/routes'
-import { Store } from '@ngrx/store'
+import { HeaderComponent } from './shared/header/header.component'
 import { defaultMessage } from './store/app.actions'
 
 @Component({
