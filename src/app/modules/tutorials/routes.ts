@@ -1,6 +1,8 @@
 import { MemoizeComponent } from './memoize/memoize.component'
 import { PORoutes } from '../../app.routes'
 import { InputBaseComponent } from './input-base/input-base.component'
+import { provideState } from '@ngrx/store'
+import { usersFeature } from '../../store/users/users.reducer'
 
 export const TUTORIAL_MEMOIZE_URL = 'memoize'
 export const TUTORIAL_FORM_BASE_URL = 'form-base'
@@ -20,6 +22,7 @@ export const TUTORIALS_ROUTES: PORoutes = [
       header: 'Form – HTML5 native elements',
       pageTitle: 'Form – Base'
     },
-    component: InputBaseComponent
+    component: InputBaseComponent,
+    providers: [provideState(usersFeature)]
   }
 ]

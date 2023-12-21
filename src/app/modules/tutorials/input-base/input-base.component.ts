@@ -1,9 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core'
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { USERS_DEFAULT_DATA } from '../../../core/data'
 import { RoleEnum } from '../../../core/models/role.enum'
 import { GenderEnum } from '../../../core/models/gender.enum'
 import { User } from '../../../core/models/user'
+import { Store } from '@ngrx/store'
+import { saveUser, updateUser } from '../../../store/users/users.actions'
+import { map, Observable } from 'rxjs'
+import { selectUsers } from '../../../store/users/users.selector'
+import { AsyncPipe } from '@angular/common'
 
 export interface Option<T> {
   value: T
@@ -12,8 +17,9 @@ export interface Option<T> {
 
 export interface TableHeader extends TableCellBase {}
 
-export interface TableRow {
+export interface TableRow<T> {
   cells: TableCell[]
+  data?: Partial<T>
   id?: number
 }
 
@@ -54,34 +60,56 @@ interface UserForm {
 
 @Component({
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AsyncPipe],
   templateUrl: './input-base.component.html',
   styleUrl: './input-base.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InputBaseComponent {
+export class InputBaseComponent implements OnInit {
   // private _users = [...USERS_DEFAULT_DATA]
-  private _users = signal(USERS_DEFAULT_DATA)
-  headers: TableHeader[] = HEADER
-  rows = computed(() =>
-    this._users().map((user) => ({
-      id: user.id,
-      cells: [
-        {
-          label: `${user.familyName} ${user.givenName}`,
-          property: this.headers.at(0)!.property
-        },
-        {
-          label: user.birthday?.toLocaleString(),
-          property: this.headers.at(1)!.property
-        },
-        {
-          label: `${user.mailingAddress.zip} ${user.mailingAddress.city}, ${user.mailingAddress.streetName} ${user.mailingAddress.streetType} ${user.mailingAddress.streetNumber}.`,
-          property: this.headers.at(2)!.property
-        }
-      ]
-    }))
+  // private _users: WritableSignal<User[]> = signal(USERS_DEFAULT_DATA)
+  rows$: Observable<TableRow<User>[]> = this._store.select(selectUsers).pipe(
+    map((users) =>
+      users.map((user) => ({
+        id: user.id,
+        data: user,
+        cells: [
+          {
+            label: `${user.familyName} ${user.givenName}`,
+            property: this.headers.at(0)!.property
+          },
+          {
+            label: user.birthday?.toLocaleString(),
+            property: this.headers.at(1)!.property
+          },
+          {
+            label: `${user.mailingAddress.zip} ${user.mailingAddress.city}, ${user.mailingAddress.streetName} ${user.mailingAddress.streetType} ${user.mailingAddress.streetNumber}.`,
+            property: this.headers.at(2)!.property
+          }
+        ]
+      }))
+    )
   )
+  headers: TableHeader[] = HEADER
+  // rows: Signal<TableRow[]> = computed(() =>
+  //   this._users().map((user) => ({
+  //     id: user.id,
+  //     cells: [
+  //       {
+  //         label: `${user.familyName} ${user.givenName}`,
+  //         property: this.headers.at(0)!.property
+  //       },
+  //       {
+  //         label: user.birthday?.toLocaleString(),
+  //         property: this.headers.at(1)!.property
+  //       },
+  //       {
+  //         label: `${user.mailingAddress.zip} ${user.mailingAddress.city}, ${user.mailingAddress.streetName} ${user.mailingAddress.streetType} ${user.mailingAddress.streetNumber}.`,
+  //         property: this.headers.at(2)!.property
+  //       }
+  //     ]
+  //   }))
+  // )
   form: FormGroup<UserForm> | undefined
   genderOptions: Option<GenderEnum>[] = [
     {
@@ -108,35 +136,48 @@ export class InputBaseComponent {
     }
   ]
 
-  constructor(private _fb: FormBuilder) {}
+  constructor(
+    private _fb: FormBuilder,
+    private _store: Store
+  ) {}
 
-  tableRowClicked($index: number) {
+  ngOnInit() {
+    this._store.dispatch(saveUser({ user: USERS_DEFAULT_DATA.at(0)! }))
+  }
+
+  tableRowClicked(user: Partial<User>) {
     this._createForm()
-    this.form!.patchValue(this._users().at($index)!)
+    this.form!.patchValue(user)
   }
 
   newUser() {
     this._createForm()
   }
 
-  cancelUser() {
+  clearUserForm() {
     this.form = undefined
   }
 
   saveUser() {
-    const newValue = this.form!.getRawValue() as User
-    const index = newValue.id === null ? -1 : this._users().findIndex((user) => user.id === +newValue.id!)
-    if (index >= 0) {
-      this._users.update((users) => {
-        const clonedUsers = [...users]
-        clonedUsers[index] = newValue
-        return clonedUsers
-      })
+    const newValue = this.form!.value as User
+    const newValueId = this.form?.controls.id.value
+    if (newValueId === null) {
+      this._store.dispatch(saveUser({ user: newValue }))
     } else {
-      newValue.id = Math.max(...this._users().map((user) => user.id)) + 1
-      this._users.update((users) => [...users, newValue])
+      this._store.dispatch(updateUser({ user: newValue, id: +newValueId! }))
     }
-    this.cancelUser()
+    // const index = newValue.id === null ? -1 : this._users().findIndex((user) => user.id === +newValue.id!)
+    // if (index >= 0) {
+    //   this._users.update((users) => {
+    //     const clonedUsers = [...users]
+    //     clonedUsers[index] = newValue
+    //     return clonedUsers
+    //   })
+    // } else {
+    //   newValue.id = Math.max(...this._users().map((user) => user.id)) + 1
+    //   this._users.update((users) => [...users, newValue])
+    // }
+    this.clearUserForm()
   }
 
   private _createForm() {

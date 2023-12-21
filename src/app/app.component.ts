@@ -4,6 +4,8 @@ import { RouterLink, RouterOutlet } from '@angular/router'
 import { HeaderComponent } from './shared/header/header.component'
 import { PageParamsService } from './core/services/page-params.service'
 import { TUTORIAL_FORM_BASE_URL, TUTORIAL_MEMOIZE_URL } from './modules/tutorials/routes'
+import { Store } from '@ngrx/store'
+import { defaultMessage } from './store/app.actions'
 
 @Component({
   selector: 'po-root',
@@ -41,9 +43,13 @@ export class AppComponent implements OnInit {
   protected readonly TUTORIAL_MEMOIZE_URL = TUTORIAL_MEMOIZE_URL
   protected readonly TUTORIAL_FORM_BASE_URL = TUTORIAL_FORM_BASE_URL
 
-  constructor(private _pageParams: PageParamsService) {}
+  constructor(
+    private _pageParams: PageParamsService,
+    private _store: Store
+  ) {}
 
   ngOnInit() {
     this._pageParams.watchPageParams()
+    this._store.dispatch(defaultMessage('Hello store!'))
   }
 }

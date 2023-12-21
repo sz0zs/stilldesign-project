@@ -13,6 +13,8 @@
       ],
       "rules": {
         "@angular-eslint/no-input-rename": "off",
+        "@ngrx/use-consistent-global-store-name": ["warn", "_store"],
+        "@ngrx/good-action-hygiene": "error",
         "@angular-eslint/directive-selector": [
           "error",
           {
@@ -44,6 +46,10 @@
         "plugin:prettier/recommended"
       ],
       "rules": {}
+    },
+    {
+      "files": ["*.ts"],
+      "extends": ["plugin:@ngrx/strict-requiring-type-checking"]
     }
   ]
 }

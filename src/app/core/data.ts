@@ -11,7 +11,7 @@ export const USERS_DEFAULT_DATA: User[] = [
     eyeColour: 'brown',
     height: 193,
     weight: 92,
-    id: 1,
+    id: 0,
     gender: GenderEnum.MALE,
     hairColour: 'brown',
     mailingAddress: {
